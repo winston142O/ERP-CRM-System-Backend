@@ -99,5 +99,5 @@ def send_password_reset_email(user: dict, uid: str, token: str, email: str) -> N
     })
     email = EmailMultiAlternatives(mail_subject, message, to=[email])
     email.content_subtype = "html"
-    email.send()  # TODO: Use a task queue for this instead.
+    email.send()
     logger.info(f'Password reset email sent to {email}')
