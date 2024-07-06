@@ -13,9 +13,9 @@ To configure the project, the following is needed:
 
 ### Install dependencies
 
-```
-python -m pip install -r requirements.txt
-```
+#### Docker
+
+You need to have the docker engine installed in order to run this project.
 
 ### Configure database and .env file
 
@@ -46,5 +46,5 @@ python manage.py migrate
 ### Run server
 
 ```
-python manage.py runserver
+docker compose up --build
 ```
