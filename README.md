@@ -31,6 +31,7 @@ The `.env` file should include the following variables:
 * DJANGO_SENDER_EMAIL
 * DJANGO_SENDER_EMAIL_PASSWORD
 * FRONT_END_BASE_URL
+* REDIS_PRIVATE_URL
 
 Once the database is set, run the following commands:
 
