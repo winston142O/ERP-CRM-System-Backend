@@ -1,0 +1,37 @@
+version: '3'
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: erp-system-images:latest
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      REDIS_PRIVATE_URL: redis://redis:6379/0
+    networks:
+      - my-network
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+
+  celery:
+    build: .
+    command: celery -A erp_system_backend worker --loglevel=info
+    volumes:
+      - .:/code
+    environment:
+      REDIS_PRIVATE_URL: redis://redis:6379/0
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

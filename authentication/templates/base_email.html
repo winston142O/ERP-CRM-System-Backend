@@ -1,0 +1,15 @@
+{% autoescape off %}
+    <!-- TODO: Create a better email template -->
+    <div style="padding: 25px;
+                border-radius: 25px;
+                color: black;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+
+        {% block content %}
+        {% endblock content %}
+
+        <br><br>
+        Thank you for using the site!
+        <br><br>
+    </div>
+{% endautoescape %}

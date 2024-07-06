@@ -13,9 +13,9 @@ To configure the project, the following is needed:
 
 ### Install dependencies
 
-```
-python -m pip install -r requirements.txt
-```
+#### Docker
+
+You need to have the docker engine installed in order to run this project.
 
 ### Configure database and .env file
 
@@ -31,6 +31,7 @@ The `.env` file should include the following variables:
 * DJANGO_SENDER_EMAIL
 * DJANGO_SENDER_EMAIL_PASSWORD
 * FRONT_END_BASE_URL
+* REDIS_PRIVATE_URL
 
 Once the database is set, run the following commands:
 
@@ -45,5 +46,5 @@ python manage.py migrate
 ### Run server
 
 ```
-python manage.py runserver
+docker compose up --build
 ```

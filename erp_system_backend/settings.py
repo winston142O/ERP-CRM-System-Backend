@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'authentication',
+    'personnel_management'
 ]
 
 MIDDLEWARE = [
@@ -223,3 +224,12 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# CELERY CONFIGURATION
+
+CELERY_BROKER_URL = os.getenv('REDIS_PRIVATE_URL')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_PRIVATE_URL')
+BROKER_CONNECTION_RETRY = True
+CELERY_TASK_TIME_LIMIT = 600
+CELERY_SOFT_TIME_LIMIT = 550
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 100
