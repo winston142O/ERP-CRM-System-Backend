@@ -2,16 +2,16 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import SignUpApprovalQueue
+from .contants import forbidden_usernames
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserAccountRequestSerializer(serializers.ModelSerializer):
     """ This serializer is used to handle registration logic. """
 
-    password = serializers.CharField(write_only=True)
-
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+        account_request = SignUpApprovalQueue.objects.create(**validated_data)
+        return account_request
 
     def validate(self, attrs):
         """
@@ -21,7 +21,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         required_fields = [
             'username',
             'email',
-            'password',
             'first_name',
             'last_name'
         ]
@@ -31,16 +30,36 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             if field not in attrs:
                 raise serializers.ValidationError(f"{field} is required")
 
+            elif field == 'username':
+                username = attrs[field]
+
+                if username in forbidden_usernames:
+                    raise serializers.ValidationError(f"Username '{username}' is forbidden")
+
+                # Validate existence
+                user_obj = User.objects.filter(username=username).first()
+                if user_obj:
+                    raise serializers.ValidationError("User already exists")
+
+            elif field == 'email':
+                email = attrs[field]
+
+                # Validate existence
+                user_obj = User.objects.filter(email=email).first()
+                if user_obj:
+                    raise serializers.ValidationError("User already exists")
+
         return attrs
 
     class Meta:
-        model = User
+        model = SignUpApprovalQueue
         fields = (
+            'id',
+            'requested_date',
             'username',
             'email',
-            'password',
             'first_name',
-            'last_name'
+            'last_name',
         )
 
 

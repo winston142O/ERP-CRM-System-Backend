@@ -1,0 +1,44 @@
+{% extends 'base_email.html' %}
+{% block content %}
+    Hi <strong>{{ user.first_name }}</strong>,
+    <br><br>
+
+    You're receiving this email because a new user has requested credentials to log on to the system.
+    <br><br>
+
+    The user in question is the following:
+    <br><br>
+
+    <div class="data">
+        <div style="font-size: large; color: #0D6EFD; padding: 20px; margin-right: 50px; background-color: #35373d; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); border-radius: 5px;">
+            <p>
+                <strong style="font-weight: bold;">First name:</strong> <i style="color: white">{{ user_data.first_name }}</i>
+            </p>
+            <p>
+                <strong style="font-weight: bold;">Last Name:</strong> <i  style="color: white">{{ user_data.last_name }}</i >
+            </p>
+            <p>
+                <strong style="font-weight: bold;">Email:</strong> <i  style="color: white">{{ user_data.email }}</i >
+            </p>
+        </div>
+    </div>
+
+    <br><br>
+    In order to see more information about the request, click the following button:
+    <br><br>
+
+    <!-- TODO: Implement this feature in the front-end -->
+    <a href="{{ domain }}/complete-password-reset/{{ uid }}/{{ token }}/"
+       style="background-color: #0D6EFD;
+              border: none;
+              color: white;
+              padding: 10px 20px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 16px;
+              cursor: pointer;
+              border-radius: 4px;">
+        Click here to review the request
+    </a>
+{% endblock content %}
