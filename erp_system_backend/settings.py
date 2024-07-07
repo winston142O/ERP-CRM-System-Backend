@@ -10,10 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
-import os
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -36,6 +36,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOW_METHODS = (
     "DELETE",
     "GET",
@@ -44,8 +46,6 @@ CORS_ALLOW_METHODS = (
     "POST",
     "PUT",
 )
-
-CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 

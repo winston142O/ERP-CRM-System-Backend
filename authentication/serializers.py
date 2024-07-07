@@ -1,10 +1,10 @@
-from django.contrib.auth.models import User
 from rest_framework import serializers
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
 from .models import SignUpApprovalQueue
 from .contants import forbidden_usernames
-
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from personnel_management.models import Employee
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserAccountRequestSerializer(serializers.ModelSerializer):
     """ This serializer is used to handle registration logic. """
@@ -28,7 +28,7 @@ class UserAccountRequestSerializer(serializers.ModelSerializer):
         # Check if all required fields are present in attrs
         for field in required_fields:
             if field not in attrs:
-                raise serializers.ValidationError(f"{field} is required")
+                raise serializers.ValidationError(f"{field.title()} is required")
 
             elif field == 'username':
                 username = attrs[field]
@@ -42,7 +42,9 @@ class UserAccountRequestSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError("User already exists")
 
             elif field == 'email':
-                email = attrs[field]
+                # Set email to lowercase
+                email = attrs[field].lower()
+                attrs[field] = email
 
                 # Validate existence
                 user_obj = User.objects.filter(email=email).first()
@@ -90,10 +92,20 @@ class UserLoginSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = validated_data['user']
 
+        # Generate the access/refresh tokens
         refresh = RefreshToken.for_user(user)
+
+        # Retrieve the user roles
+        employee = Employee.objects.get(user_id=user.id)
+        department_name = employee.department.department_name
+        title_name = employee.title.title_name
 
         return {
             'user_id': user.id,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
+            'role': {
+                'department': department_name,
+                'title': title_name
+            }
         }

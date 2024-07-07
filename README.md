@@ -5,7 +5,7 @@ complete customization of its capabilities and what it will measure. Making it a
 for enterprises that are in need of a management platform.
 
 The current project represents the backend, and should be ran concurrently with the frontend. In order to set up the frontend,
-check out the [frontend project repository]().
+check out the [frontend project repository](https://github.com/winston142O/ERP-CRM-System-Frontend/tree/main).
 
 ## Project setup
 
