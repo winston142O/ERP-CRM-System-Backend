@@ -61,7 +61,7 @@ class SignUpApprovalQueueAPIView(ListAPIView):
 
     def get(self, request) -> Response:
 
-        registration_requests = SignUpApprovalQueue.objects.filter(approved=False)
+        registration_requests = SignUpApprovalQueue.objects.filter(approved=False).order_by('-requested_date')
 
         # Check if a filter was provided
         name = request.GET.get('name')
@@ -95,6 +95,8 @@ class ApproveSignUpRequestAPIView(APIView):
         # Load the request's body
         body = json.loads(request.body)
 
+        # TODO: Add a reject function
+
         # Get the role data
         role_data = {
             "department_id": body.get("department_id"),
@@ -124,6 +126,7 @@ class ApproveSignUpRequestAPIView(APIView):
             create_user_and_send_activation_email.delay(approval_request_data, role_data)
 
         return Response({"message": "Account approved."}, status=status.HTTP_200_OK)
+
 
 class UserLoginAPIView(APIView):
 

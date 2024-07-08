@@ -81,6 +81,9 @@ def create_user_and_send_activation_email(approval_request_data: dict, role_data
             email.content_subtype = "html"
             email.send()
             logger.info(f"Account activation email sent to {approval_request_data['email']}")
+
+            su_request_obj.delete()
+
         except Exception as e:
             logger.error(f"Error setting up account activation for {approval_request_data['email']}, error: {e}")
             if su_request_obj:
