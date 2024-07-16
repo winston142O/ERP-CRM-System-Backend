@@ -94,8 +94,17 @@ class ApproveSignUpRequestAPIView(APIView):
 
         # Load the request's body
         body = json.loads(request.body)
+        print(body)
 
-        # TODO: Add a reject function
+        # Check if the request has been rejected
+        reject = body.get('reject', False)
+        if reject:
+            approval_request = SignUpApprovalQueue.objects.filter(approved=False, id=approval_request_id).first()
+            if not approval_request:
+                return Response({"message": "Approval Request does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+
+            approval_request.delete()
+            return Response({"message": "Account request rejected."}, status=status.HTTP_200_OK)
 
         # Get the role data
         role_data = {

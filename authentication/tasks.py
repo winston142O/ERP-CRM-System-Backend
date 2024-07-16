@@ -29,7 +29,8 @@ def notify_signup_via_email(administrator_emails: list[str], user_data: dict) ->
     email = EmailMultiAlternatives(mail_subject, message, to=administrator_emails)
     email.content_subtype = "html"
     email.send()
-    logger.info(f"Password reset email sent to {user_data['email']}")
+    logger.info(f"Signup notification email sent to {user_data['email']}")
+
 
 @shared_task
 def create_user_and_send_activation_email(approval_request_data: dict, role_data: dict) -> None:
@@ -104,3 +105,5 @@ def send_password_reset_email(user: dict, uid: str, token: str, email: str) -> N
     email.content_subtype = "html"
     email.send()
     logger.info(f'Password reset email sent to {email}')
+
+# TODO: Add invite functionality

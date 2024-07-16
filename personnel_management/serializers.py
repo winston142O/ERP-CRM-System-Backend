@@ -1,6 +1,12 @@
+# Dependency imports
 from rest_framework import serializers
 
-from personnel_management.models import Department, DepartmentTitles
+# Model imports
+from personnel_management.models import (
+    Employee,
+    Department,
+    DepartmentTitles
+)
 
 
 class DepartmentTitleSerializer(serializers.ModelSerializer):
@@ -25,4 +31,25 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'id',
             'department_name',
             'titles',
+        )
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    department = serializers.StringRelatedField(read_only=True, source='department.department_name')
+    title = serializers.StringRelatedField(read_only=True, source='title.title_name')
+    user_id = serializers.StringRelatedField(read_only=True, source='user.id')
+
+    class Meta:
+        model = Employee
+        fields = (
+            'first_name',
+            'last_name',
+            'user_id',
+            'email',
+            'title',
+            'department',
+            # 'supervisor',
+            # 'profile_pic_name'
+            # 'employment_contract_name',
+            # TODO: Add commented options
         )

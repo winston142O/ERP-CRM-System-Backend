@@ -11,6 +11,7 @@ class IsAdminUser(BasePermission):
     def has_permission(self, request, view):
         user_obj = User.objects.get(username=request.user.username)
         employee = Employee.objects.filter(user=user_obj).first()
+
         if employee:
             return employee.title.title_name == 'System Administrator'
         else:
