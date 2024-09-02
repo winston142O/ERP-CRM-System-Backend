@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from personnel_management.models import Employee
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
 class UserAccountRequestSerializer(serializers.ModelSerializer):
     """ This serializer is used to handle registration logic. """
 

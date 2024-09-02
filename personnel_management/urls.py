@@ -6,5 +6,5 @@ from .views import (
 
 urlpatterns = [
     path('dropdown-options/', EmployeeDropdownOptions.as_view(), name='employee_dropdown_opts'),
-    path('employees/<int:employee_id>/', EmployeeSearchAPIView.as_view(), name='employee_search'),
+    path('employees/', EmployeeSearchAPIView.as_view(), name='employee_search'),
 ]

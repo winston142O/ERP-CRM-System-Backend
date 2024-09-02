@@ -19,7 +19,7 @@ def send_registration_email_notification(sender, instance: SignUpApprovalQueue, 
 
         # Get the email addresses of the system administrators
         admin_employees = Employee.objects.filter(title__title_name='System Administrator')
-        admin_emails = [employee.email for employee in admin_employees if employee.email and employee.email != '']
+        admin_emails = [employee.email for employee in admin_employees if employee.email and employee.email != '' and employee.user.is_active]
 
         # Retrieve the user's information
         new_user_data = {

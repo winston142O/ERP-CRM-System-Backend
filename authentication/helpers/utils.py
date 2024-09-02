@@ -2,6 +2,8 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth import get_user_model
 from django.utils.encoding import force_str
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 def authenticate_uuid_token(uidb64, token):
@@ -20,3 +22,15 @@ def authenticate_uuid_token(uidb64, token):
         return user, uid
 
     return None
+
+
+def send_email(template_name: str, template_context: dict, mail_subject: str, to: list[str]) -> None:
+    """ Sends an email after providing a template and context, along with a list of
+        emails that should be included in the "To" option.
+    """
+
+    message = render_to_string(template_name, template_context)
+    email = EmailMultiAlternatives(mail_subject, message, to)
+    email.content_subtype = "html"
+    email.send()
+

@@ -27,7 +27,14 @@ from .models import SignUpApprovalQueue
 from .permission_classes import IsAdminUser
 from .pagination import ApprovalListPagination
 from personnel_management.models import Department, DepartmentTitles
-from .tasks import send_password_reset_email, create_user_and_send_activation_email
+from .tasks import (
+    send_account_invite,
+    send_password_reset_email,
+    create_user_and_send_activation_email,
+)
+
+# Model imports
+from django.contrib.auth.models import User
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -66,10 +73,13 @@ class SignUpApprovalQueueAPIView(ListAPIView):
         # Check if a filter was provided
         name = request.GET.get('name')
         if name is not None:
-            registration_requests.filter(
+            registration_requests = registration_requests.filter(
                 Q(first_name__icontains=name) |
                 Q(last_name__icontains=name)
             )
+        email = request.GET.get('email')
+        if email is not None:
+            registration_requests = registration_requests.filter(email__icontains=email)
 
         # Serialize and paginate the results
         paginated_queryset = self.paginate_queryset(registration_requests)
@@ -135,6 +145,58 @@ class ApproveSignUpRequestAPIView(APIView):
             create_user_and_send_activation_email.delay(approval_request_data, role_data)
 
         return Response({"message": "Account approved."}, status=status.HTTP_200_OK)
+
+
+class AccountInviteAPIView(APIView):
+    """
+    Let a system administrator invite users to the platform so that they
+    may log in.
+    """
+
+    permission_classes = [IsAuthenticated & IsAdminUser]
+
+    def post(self, request) -> Response:
+
+        # Load the request body
+        body = json.loads(request.body)
+
+        # TODO: Add the option to schedule the invite
+
+        # Retrieve the required data
+        employee_data = {
+            "first_name": body.get("first_name"),
+            "last_name": body.get("last_name"),
+            "email": body.get("email"),
+        }
+
+        role_data = {
+            "department_id": body.get("department_id"),
+            "title_id": body.get("title_id"),
+        }
+
+        # Verify that all the data was submitted
+        if not all(role_data.values()):
+            return Response({"message": "Missing role data."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not all(employee_data.values()):
+            return Response({"message": "Missing employee data."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verify that the account doesn't already exist
+        account = User.objects.filter(email=employee_data["email"]).first()
+        if not account:
+            # Verify that the account hasn't been requested
+            account_request = SignUpApprovalQueue.objects.filter(email=employee_data["email"]).first()
+            if account_request:
+                return Response({
+                    "message": "This person has already requested an account, check it out in the request approval view"
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "This person already has an account."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Start the process
+        send_account_invite.delay(employee_data, role_data)
+
+        return Response({"message": "Account invite sent."}, status=status.HTTP_200_OK)
 
 
 class UserLoginAPIView(APIView):
@@ -224,3 +286,14 @@ class ResetPasswordConfirmAPIView(APIView):
             return Response({"message": "Password has been reset."}, status=200)
         else:
             return Response({"error": "Invalid token."}, status=400)
+
+
+class PendingAccountsAPIView(APIView):
+    """ This view serves as a way to interact with accounts that have
+        not been activated yet.
+    """
+
+    permission_classes = [IsAuthenticated & IsAdminUser]
+
+    def get(self, request):
+        pass

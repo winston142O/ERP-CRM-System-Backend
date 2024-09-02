@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     UserLoginAPIView,
     ResetPasswordAPIView,
+    AccountInviteAPIView,
     UserAccountRequestAPIView,
     SignUpApprovalQueueAPIView,
     ResetPasswordConfirmAPIView,
@@ -14,8 +15,9 @@ urlpatterns = [
     path('login/', UserLoginAPIView.as_view(), name='user_login'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('invite-user/', AccountInviteAPIView.as_view(), name='invite_user'),
     path('reset-password/', ResetPasswordAPIView.as_view(), name='reset_password'),
-    path('confirm-reset-password/', ResetPasswordConfirmAPIView.as_view(), name='reset_password_confirm'),
     path('sign-up-approval-queue/', SignUpApprovalQueueAPIView.as_view(), name='signup_approval_queue'),
+    path('confirm-reset-password/', ResetPasswordConfirmAPIView.as_view(), name='reset_password_confirm'),
     path('approve-sign-up-request/<int:approval_request_id>/', ApproveSignUpRequestAPIView.as_view(), name='approve_signup_request'),
 ]
