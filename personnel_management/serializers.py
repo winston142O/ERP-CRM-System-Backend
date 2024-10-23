@@ -35,6 +35,10 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    """ This is intended for retrieving employees in bulk in an optimized, paginated manner.
+        Therefore, it includes only the necessary fields.
+    """
+
     department = serializers.StringRelatedField(read_only=True, source='department.department_name')
     title = serializers.StringRelatedField(read_only=True, source='title.title_name')
     user_id = serializers.StringRelatedField(read_only=True, source='user.id')
@@ -42,6 +46,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = (
+            'id',
             'first_name',
             'last_name',
             'user_id',

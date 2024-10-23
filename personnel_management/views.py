@@ -103,10 +103,10 @@ class EmployeeSearchAPIView(ListAPIView):
             employees = employees.filter(email__icontains=options['email'])
 
         # TODO: Add the option to filter with custom attributes
-
         return employees
 
     def get_employee_details(self, request, employee_id: int) -> Response:
+
         # Find the employee
         try:
             employee = Employee.objects.get(pk=employee_id)

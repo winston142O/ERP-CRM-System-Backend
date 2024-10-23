@@ -98,11 +98,13 @@ class UserLoginSerializer(serializers.Serializer):
 
         # Retrieve the user roles
         employee = Employee.objects.get(user_id=user.id)
+        employee_id = employee.id
         department_name = employee.department.department_name
         title_name = employee.title.title_name
 
         return {
             'user_id': user.id,
+            'employee_id': employee_id,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
             'role': {

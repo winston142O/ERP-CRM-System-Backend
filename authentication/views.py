@@ -237,7 +237,9 @@ class ResetPasswordAPIView(APIView):
                 # Token an UID generated to verify user identity
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                send_password_reset_email.delay(user, uid, token, email)
+
+                user_data = model_to_dict(user)
+                send_password_reset_email.delay(user_data, uid, token, email)
 
             return Response({"message": "Password reset email has been sent."}, status=200)
         else:
@@ -296,4 +298,9 @@ class PendingAccountsAPIView(APIView):
     permission_classes = [IsAuthenticated & IsAdminUser]
 
     def get(self, request):
+        # TODO
+        # Find the deactivated accounts
+        deac_accs = User.objects.filter(is_active=False)
+
+        # Find the employees linked to the inactive accounts
         pass

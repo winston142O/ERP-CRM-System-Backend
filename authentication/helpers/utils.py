@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import force_str
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def authenticate_uuid_token(uidb64, token):
